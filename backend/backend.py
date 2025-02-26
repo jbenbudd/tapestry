@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from backend.pubmed import search_and_fetch
@@ -18,13 +19,13 @@ app.add_middleware(
 )
 
 @app.get("/api/search")
-async def search_articles(query: str, max_results: int = 10):
+async def search_articles(query: str, max_results: int = 10, start_date: Optional[str] = None, end_date: Optional[str] = None):
     """
     Search for PubMed articles based on the query.
     Returns a list of articles with id, title, and abstract.
     """
     try:
-        articles = search_and_fetch(query, max_results)
+        articles = search_and_fetch(query, max_results, start_date, end_date)
         if not articles:
             raise HTTPException(status_code=404, detail="No articles found.")
         return articles
